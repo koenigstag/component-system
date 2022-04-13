@@ -1,7 +1,68 @@
 {
   "data": [
     {
-      
+      "code": "KPM900.1",
+      "name": "Кровать Мори KPM900.1",
+      "price": { "old": 7160, "current": 5010 },
+      "sale": 30,
+      "isBestseller": false,
+      "colors": ["#2D2D2D", "#4D511D", "#F3E7C6"]
+    },
+    {
+      "code": "LUCIDO.3",
+      "name": "Гостинная модульная Lucido",
+      "price": { "old": 520130, "current": 470240 },
+      "sale": 30,
+      "isBestseller": true,
+      "colors": ["#4D511D"]
+    },
+    {
+      "code": "KPP1600.1",
+      "name": "Кровать Ронда",
+      "price": { "old": 12350, "current": 10320 },
+      "sale": 15,
+      "isBestseller": true,
+      "colors": ["#2D2D2D"]
+    },
+    {
+      "code": "SOHO.1",
+      "name": "Кровать Soho",
+      "price": { "old": 21440, "current": 16490 },
+      "sale": 20,
+      "isBestseller": true,
+      "colors": ["#F3E7C6", "#2D2D2D"]
+    },
+    {
+      "code": "DANTE.1",
+      "name": "Кровать Dante",
+      "price": { "old": 32120, "current": 29180 },
+      "sale": 20,
+      "isBestseller": true,
+      "colors": ["#2D2D2D"]
+    },
+    {
+      "code": "RIMINI.2",
+      "name":"Кухня модульная Rimini",
+      "price": { "old": 225120, "current": 193180 },
+      "sale": 30,
+      "isBestseller": false,
+      "colors": ["#4D511D", "#F3E7C6"]
+    },
+    {
+      "code": "DANTE.3",
+      "name":"Гостинная модульная Dante",
+      "price": { "old": 148600, "current": 130360 },
+      "sale": 20,
+      "isBestseller": false,
+      "colors": ["#F3E7C6", "#2D2D2D"]
+    },
+    {
+      "code": "CAMILLA.3",
+      "name":"Гостинная модульная Camilla",
+      "price": { "old": 65000, "current": 48760 },
+      "sale": 15,
+      "isBestseller": false,
+      "colors": ["#F3E7C6"]
     }
   ]
 }
