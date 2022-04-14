@@ -1,7 +1,5 @@
-const headerElem = document.createElement('header');
-const mainElem = document.createElement('main');
+function App() {
+  return [Header(), Main()];
+}
 
-header.append(Header());
-main.append(Main());
-
-document.body.append(headerElem, mainElem);
+document.body.append(...App());
