@@ -6,7 +6,12 @@
       "price": { "old": 7160, "current": 5010 },
       "sale": 30,
       "isBestseller": false,
-      "colors": ["#2D2D2D", "#4D511D", "#F3E7C6"]
+      "colors": ["#2D2D2D", "#4D511D", "#F3E7C6"],
+      "dimensions": {
+        "width": 1635,
+        "height": 650,
+        "depth": 2032
+      }
     },
     {
       "code": "LUCIDO.3",
@@ -14,7 +19,12 @@
       "price": { "old": 520130, "current": 470240 },
       "sale": 30,
       "isBestseller": true,
-      "colors": ["#4D511D"]
+      "colors": ["#4D511D"],
+      "dimensions": {
+        "width": 1635,
+        "height": 650,
+        "depth": 2032
+      }
     },
     {
       "code": "KPP1600.1",
@@ -22,7 +32,12 @@
       "price": { "old": 12350, "current": 10320 },
       "sale": 15,
       "isBestseller": true,
-      "colors": ["#2D2D2D"]
+      "colors": ["#2D2D2D"],
+      "dimensions": {
+        "width": 1635,
+        "height": 650,
+        "depth": 2032
+      }
     },
     {
       "code": "SOHO.1",
@@ -30,7 +45,12 @@
       "price": { "old": 21440, "current": 16490 },
       "sale": 20,
       "isBestseller": true,
-      "colors": ["#F3E7C6", "#2D2D2D"]
+      "colors": ["#F3E7C6", "#2D2D2D"],
+      "dimensions": {
+        "width": 1635,
+        "height": 650,
+        "depth": 2032
+      }
     },
     {
       "code": "DANTE.1",
@@ -38,7 +58,12 @@
       "price": { "old": 32120, "current": 29180 },
       "sale": 20,
       "isBestseller": true,
-      "colors": ["#2D2D2D"]
+      "colors": ["#2D2D2D"],
+      "dimensions": {
+        "width": 1635,
+        "height": 650,
+        "depth": 2032
+      }
     },
     {
       "code": "RIMINI.2",
@@ -46,7 +71,12 @@
       "price": { "old": 225120, "current": 193180 },
       "sale": 30,
       "isBestseller": false,
-      "colors": ["#4D511D", "#F3E7C6"]
+      "colors": ["#4D511D", "#F3E7C6"],
+      "dimensions": {
+        "width": 1635,
+        "height": 650,
+        "depth": 2032
+      }
     },
     {
       "code": "DANTE.3",
@@ -54,7 +84,12 @@
       "price": { "old": 148600, "current": 130360 },
       "sale": 20,
       "isBestseller": false,
-      "colors": ["#F3E7C6", "#2D2D2D"]
+      "colors": ["#F3E7C6", "#2D2D2D"],
+      "dimensions": {
+        "width": 1635,
+        "height": 650,
+        "depth": 2032
+      }
     },
     {
       "code": "CAMILLA.3",
@@ -62,7 +97,12 @@
       "price": { "old": 65000, "current": 48760 },
       "sale": 15,
       "isBestseller": false,
-      "colors": ["#F3E7C6"]
+      "colors": ["#F3E7C6"],
+      "dimensions": {
+        "width": 1635,
+        "height": 650,
+        "depth": 2032
+      }
     }
   ]
 }
