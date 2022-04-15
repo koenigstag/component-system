@@ -1,3 +1,5 @@
+import { loadProducts } from '../api.mjs';
+
 function ProductsList() {
   const sectionElem = document.createElement('section');
 
@@ -16,3 +18,5 @@ function ProductsList() {
 
   return sectionElem;
 }
+
+export default ProductsList;

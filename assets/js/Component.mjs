@@ -6,7 +6,7 @@
  * 3) Create an instance ```component = new Component(props?)```
  * 4) Use ```component.redraw(props?)``` method to get ```render()``` method results
  */
-class Component {
+export class Component {
   props = {};
   state = {};
   _prevProps = this.props;
@@ -113,10 +113,21 @@ class Component {
   static addElementChildren(element, children) {
     if (Array.isArray(children)) {
       for (const child of children) {
-        element.append(child);
+        this.appendComponentChild(element, child);
       }
     } else {
-      element.append(children);
+      this.appendComponentChild(element, children);
+    }
+  }
+
+  static appendComponentChild(element, child) {
+    if (!(element instanceof Element))
+      return
+
+    if (child instanceof Component) {
+      element.append(child.redraw());
+    } else {
+      element.append(child);
     }
   }
 
