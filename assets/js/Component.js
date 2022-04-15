@@ -36,6 +36,10 @@ class Component {
     this.state = value;
   };
 
+  /* LIFECYCLE methods */
+  componentDidMount() {};
+  componentDidUpdate(prevProps = this._prevProps, prevState = this._prevState) {};
+
   redraw(props = this._prevProps) {
     // reassign props
     this.props = props;
@@ -53,7 +57,10 @@ class Component {
         this._prevRenderedElement.after(newElem);
         this._prevRenderedElement.remove();
       }
+    } else {
+      setTimeout(() => this.componentDidMount(), 0);
     }
+    setTimeout(() => this.componentDidUpdate(), 0);
     
     // assign newly renderred element
     this._prevRenderedElement = newElem;
