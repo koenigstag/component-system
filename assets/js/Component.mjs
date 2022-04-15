@@ -97,6 +97,50 @@ export class Component {
     }
   }
 
+  static addElementClassName(element, className) {
+    if (typeof className === "string") {
+      element.className = className;
+
+    } else if (Array.isArray(className)) {
+      const classes = className
+      .map((data) => {
+        if (typeof data === "string") {
+          return data;
+
+        } else if (typeof data === "function") {
+          const result = data();
+
+          if (typeof result === "string") {
+            return result;
+          }
+
+        } else if (data instanceof Object) {
+          const arr = [];
+          for (const key in data) {
+            const cell = data[key];
+
+            if (typeof cell === "function") {
+              const result = cell();
+
+              if (typeof result === "string") {
+                arr.push(result);
+              }
+
+            } else if (Boolean(cell)) {
+              arr.push(key);
+            }
+          }
+          return arr;
+        }
+      })
+      .flat(Infinity)
+      .filter(v => typeof v === "string")
+      .join(' ');
+
+      element.className = classes;
+    }
+  }
+
   static addElementEvents(element, events) {
     for (const eventKey in events) {
       const handler = events[eventKey];
@@ -132,7 +176,7 @@ export class Component {
   }
 
   static addElementAttributes(element, props) {
-    const nonHTMLAttributes = ['style', 'events', 'children'];
+    const nonHTMLAttributes = ['style', 'className', 'events', 'children'];
     const filteredAttributes = Object.keys(props).filter(key => !nonHTMLAttributes.includes(key));
     for(const attribute of filteredAttributes) {
       const value = props[attribute];
@@ -153,6 +197,10 @@ export class Component {
     // add styles, attributes, listeners, child nodes
     if (props.style) {
       this.addElementStyle(element, props.style);
+    }
+
+    if (props.className) {
+      this.addElementClassName(element, props.className);
     }
 
     if (props.events) {
