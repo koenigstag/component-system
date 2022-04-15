@@ -1,4 +1,3 @@
-
 /**
  * React-like class component. Intended for usage with regular DOM
  * - Usage:
@@ -45,13 +44,19 @@ class Component {
     const newElem = this.render();
     
     // after first render
-    if (this._prevRenderedElement) {
+    if (this._prevRenderedElement && this._prevRenderedElement instanceof Element) {
       // replace dom node
-      this._prevRenderedElement.replaceWith(newElem);
+      if (this._prevRenderedElement.replaceWith) {
+        this._prevRenderedElement.replaceWith(newElem);
+      } else {
+        // polyfill
+        this._prevRenderedElement.after(newElem);
+        this._prevRenderedElement.remove();
+      }
     }
     
     // assign newly renderred element
-    this._prevRenderedHTMLElement = newElem;
+    this._prevRenderedElement = newElem;
 
     return newElem;
   };
@@ -73,6 +78,78 @@ class Component {
     // re-render
     this.redraw();
   };
+
+  static addElementStyle(element, style) {
+    if (typeof style === "string") {
+      element.style = style;
+    } else if(typeof style === "object") {
+      for (const cssProp in style) {
+        const value = style[cssProp];
+        element.style[cssProp] = value;
+      }
+    }
+  }
+
+  static addElementEvents(element, events) {
+    for (const eventKey in events) {
+      const handler = events[eventKey];
+      if (typeof handler === "function") {
+        element.addEventListener(eventKey, handler);
+      } else if (Array.isArray(handler)) {
+        for(const func of handler) {
+          element.addEventListener(eventKey, func);
+        }
+      }
+    }
+  }
+
+  static addElementChildren(element, children) {
+    if (Array.isArray(children)) {
+      for (const child of children) {
+        element.append(child);
+      }
+    } else {
+      element.append(children);
+    }
+  }
+
+  static addElementAttributes(element, props) {
+    const nonHTMLAttributes = ['style', 'events', 'children'];
+    const filteredAttributes = Object.keys(props).filter(key => !nonHTMLAttributes.includes(key));
+    for(const attribute of filteredAttributes) {
+      const value = props[attribute];
+      element[attribute] = value;
+    }
+  }
+
+  static createFragment(markup, props = {}) {
+    // convert string to fragment
+    const fragment = document.createRange().createContextualFragment(markup.trim());
+
+    if (fragment.childElementCount > 1) {
+      throw new Error('Only one child element permitted in component first child level');
+    }
+
+    const element = fragment.firstChild;
+    
+    // add styles, attributes, listeners, child nodes
+    if (props.style) {
+      this.addElementStyle(element, props.style);
+    }
+
+    if (props.events) {
+      this.addElementEvents(element, props.events);
+    }
+
+    if (props.children) {
+      this.addElementChildren(element, props.children);
+    }
+
+    this.addElementAttributes(element, props);
+
+    // get fragment first inner element
+    return element;
+  }
 
   render() {
     throw new Error('Cannot find render() method realisation. Please make sure you created render method in your class');

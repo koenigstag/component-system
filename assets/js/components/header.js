@@ -6,7 +6,7 @@ function Header () {
   return headerElem;
 }
 
-class HeaderClass extends Component{
+class HeaderClass extends Component {
   constructor(props) {
     super(props);
 
@@ -21,12 +21,33 @@ class HeaderClass extends Component{
   }
 
   render() {
-    const headerElem = document.createElement('header');
-    // logo, search, phone, buttons
+    const headerElem = Component.createFragment(`
+      <header>
+        X: ${this.state.x}; Y: ${this.state.y}
+      </header>
+    `,
+    {
+      style: { padding: '30px' },
+      events: { click: [this.headerClickEvent] },
+      children: [new TestChild().redraw()],
+    });
     
-    headerElem.addEventListener('click', this.headerClickEvent);
-    headerElem.append(`X: ${this.state.x}; Y: ${this.state.y}`);
-
     return headerElem;
+  }
+}
+
+class TestChild extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  handleMouseMove = (e) => {
+    console.log(e.x, e.y);
+  }
+
+  render() {
+    const elem = Component.createFragment('<div>test</div>', { className: "test", events: { mousemove: this.handleMouseMove } })
+
+    return elem;
   }
 }
