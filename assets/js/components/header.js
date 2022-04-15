@@ -16,7 +16,7 @@ class HeaderClass extends Component{
     };
   }
 
-  headerClickEvent(e) {
+  headerClickEvent = (e) => {
     this.setState({ x: e.x, y: e.y });
   }
 
@@ -24,7 +24,7 @@ class HeaderClass extends Component{
     const headerElem = document.createElement('header');
     // logo, search, phone, buttons
     
-    headerElem.addEventListener('click', (e) => this.headerClickEvent(e));
+    headerElem.addEventListener('click', this.headerClickEvent);
     headerElem.append(`X: ${this.state.x}; Y: ${this.state.y}`);
 
     return headerElem;
