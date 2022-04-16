@@ -1,37 +1,60 @@
-import { Component, Fragment } from '../Component.mjs';
+import { clsx } from "../clsx.mjs";
 
-class Header extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
+class Header extends hyperHTML.hyper.Component {
+  get defaultState() {
+    return {
       x: 0,
       y: 0,
-      int: 0,
+      timer: 0,
     };
   }
 
-  headerClickEvent = (e) => {
-    this.setState((state) => ({ ...state, x: e.x, y: e.y }));
+  constructor(props) {
+    super(props);
+    setTimeout(() => this.componentDidMount());
   }
 
+  headerClickEvent = (e) => {
+    // save old state plus changes
+    // after state changes render method is called
+    this.setState((state) => ({ ...state, x: e.x, y: e.y }));
+  };
+
+  // is called once the component rendered for the first time
   componentDidMount() {
-    setInterval(() => this.setState((state) => ({ ...state, int: state.int + 1 })), 1000);
+    setInterval(
+      () => this.setState((state) => ({ ...state, timer: state.timer + 1 })),
+      1000
+    );
+  }
+
+  // is called after each render
+  componentDidUpdate() {
+    console.log(this.state);
   }
 
   render() {
-    const headerElem = new Fragment(`
-      <header>
-        X: ${this.state.x}; Y: ${this.state.y}
-        timer: ${this.state.int}
+    setTimeout(() => this.componentDidUpdate());
+
+    const { x, y, timer } = this.state;
+
+    return this.html`
+      <style>
+        .pageHeader {
+          padding: 30px;
+          border: 1px solid red;
+        }
+
+        .conditional {
+          background: bisque;
+        }
+      </style>
+
+      <header class="${clsx("pageHeader", { conditional: timer % 2 === 1 })}" onclick=${this.headerClickEvent}>
+        X: ${x}; Y: ${y}
+        timer: ${timer}
       </header>
-    `,
-    {
-      style: { padding: '30px' },
-      events: { click: [this.headerClickEvent] },
-    }).rootElement;
-    
-    return headerElem;
+    `;
   }
 }
 

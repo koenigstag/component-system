@@ -1,35 +1,40 @@
-import { Component } from '../Component.mjs';
-import { loadProducts } from '../api.mjs';
+import { loadProducts } from "../api.mjs";
 
-class ProductsList extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
+class ProductsList extends hyperHTML.hyper.Component {
+  get defaultState() {
+    return {
       products: [],
     };
   }
 
+  constructor(props) {
+    super(props);
+
+    setTimeout(() => this.componentDidMount());
+  }
+
   componentDidMount() {
     loadProducts().then(({ data: products }) => {
-      this.setState(state => ({ ...state, products }));
+      this.setState((state) => ({ ...state, products }));
     });
   }
 
   render() {
-    const sectionElem = document.createElement('section');
-    const articles = []
-    for (const prod of this.state.products) {
-      const articleElem = document.createElement('article');
 
-      const card = JSON.stringify(prod);
+    const { products } = this.state;
 
-      articleElem.append(card);
-      articles.push(articleElem);
-    }
-    sectionElem.append(...articles);
-
-    return sectionElem;
+    return this.html`
+      <section>
+        ${products.map(
+          // wiring list element to object will save it for next renders until object change
+          (prod) => hyperHTML.wire(prod)`
+            <article>
+              ${JSON.stringify(prod)}
+            </article>
+          `
+        )}
+      </section>
+    `;
   }
 }
 

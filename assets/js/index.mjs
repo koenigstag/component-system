@@ -1,12 +1,31 @@
-import { Component, Fragment, rootDOM } from './Component.mjs';
-import Header from './components/header.mjs';
-import Main from './components/main.mjs';
+import Header from "./components/header.mjs";
+import Main from "./components/main.mjs";
 
-class App extends Component {
+class App extends hyperHTML.hyper.Component {
+  get defaultState() {
+    return { children: [] };
+  }
+
+  constructor(props) {
+    super(props);
+    setTimeout(() => this.componentDidMount());
+  }
+
+  componentDidMount() {
+    this.setState((state) => ({
+      ...state,
+      children: [...state.children, new Header(), new Main()],
+    }));
+  }
+
   render() {
-    const div = new Fragment('app', { children: [new Header(), new Main()] }).rootElement;
-    return div;
+
+    const { children } = this.state;
+
+    return this.html`<app>
+      ${children}
+    </app>`;
   }
 }
 
-rootDOM("app-root", new App());
+hyperHTML.hyper(document.querySelector("#app-root"))`${new App()}`;
