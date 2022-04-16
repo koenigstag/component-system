@@ -47,6 +47,124 @@ export const rootDOM = (elemId, child) => {
   rootDOMElement.append(rootFragment);
 }
 
+export class Fragment {
+  rootElement = null;
+
+  constructor(markup, props = {}) {
+    this.rootElement = Fragment.createFragment(markup, props);
+  }
+
+  static addElementStyle(element, style) {
+    if (typeof style === "string") {
+      element.style = style;
+    } else if (typeof style === "object") {
+      for (const cssProp in style) {
+        const value = style[cssProp];
+        element.style[cssProp] = value;
+      }
+    }
+  }
+
+  static addElementClassName(element, className) {
+    if (typeof className === "string") {
+      element.className = className;
+    } else if (Array.isArray(className)) {
+      const classes = clsx(...className);
+
+      element.className = classes;
+    }
+  }
+
+  static addElementEvents(element, events) {
+    for (const eventKey in events) {
+      const handler = events[eventKey];
+      if (typeof handler === "function") {
+        element.addEventListener(eventKey, handler);
+      } else if (Array.isArray(handler)) {
+        for (const func of handler) {
+          element.addEventListener(eventKey, func);
+        }
+      }
+    }
+  }
+
+  static addElementChildren(element, children) {
+    if (Array.isArray(children)) {
+      for (const child of children) {
+        this.appendComponentChild(element, child);
+      }
+    } else {
+      this.appendComponentChild(element, children);
+    }
+  }
+
+  static appendComponentChild(element, child) {
+    if (!(element instanceof Element)) return;
+
+    if (child instanceof Component) {
+      Promise.resolve().then(() => {
+        element.append(child.redraw());
+      });
+    } else {
+      element.append(child);
+    }
+  }
+
+  static addElementAttributes(element, props) {
+    const nonHTMLAttributes = ["style", "className", "events", "children"];
+    const filteredAttributes = Object.keys(props).filter(
+      (key) => !nonHTMLAttributes.includes(key)
+    );
+    for (const attribute of filteredAttributes) {
+      const value = props[attribute];
+      element[attribute] = value;
+    }
+  }
+
+  static createFragment(markup, props = {}) {
+    let element = null;
+
+    if (markup.includes('<') || markup.includes('</')) {
+      // convert string to fragment
+      const fragment = document
+      .createRange()
+      .createContextualFragment(markup.trim());
+
+      if (fragment.childElementCount > 1) {
+        throw new Error(
+          "Only one child element permitted in component first child level"
+        );
+      }
+
+      // get fragment first inner element
+      element = fragment.firstChild;
+    } else {
+      element = document.createElement(markup);
+    }
+
+    // add styles, attributes, listeners, child nodes
+    if (props.style) {
+      this.addElementStyle(element, props.style);
+    }
+
+    if (props.className) {
+      this.addElementClassName(element, props.className);
+    }
+
+    if (props.events) {
+      this.addElementEvents(element, props.events);
+    }
+
+    if (props.children) {
+      this.addElementChildren(element, props.children);
+    }
+
+    this.addElementAttributes(element, props);
+
+    return element;
+  }
+}
+
 /**
  * React-like class component. Intended for usage with regular DOM
  * - Usage:
@@ -142,116 +260,6 @@ export class Component {
 
     // re-render
     this.redraw();
-  }
-
-  static addElementStyle(element, style) {
-    if (typeof style === "string") {
-      element.style = style;
-    } else if (typeof style === "object") {
-      for (const cssProp in style) {
-        const value = style[cssProp];
-        element.style[cssProp] = value;
-      }
-    }
-  }
-
-  static addElementClassName(element, className) {
-    if (typeof className === "string") {
-      element.className = className;
-    } else if (Array.isArray(className)) {
-      const classes = clsx(...className);
-
-      element.className = classes;
-    }
-  }
-
-  static addElementEvents(element, events) {
-    for (const eventKey in events) {
-      const handler = events[eventKey];
-      if (typeof handler === "function") {
-        element.addEventListener(eventKey, handler);
-      } else if (Array.isArray(handler)) {
-        for (const func of handler) {
-          element.addEventListener(eventKey, func);
-        }
-      }
-    }
-  }
-
-  static addElementChildren(element, children) {
-    if (Array.isArray(children)) {
-      for (const child of children) {
-        this.appendComponentChild(element, child);
-      }
-    } else {
-      this.appendComponentChild(element, children);
-    }
-  }
-
-  static appendComponentChild(element, child) {
-    if (!(element instanceof Element)) return;
-
-    if (child instanceof Component) {
-      Promise.resolve().then(() => {
-        element.append(child.redraw());
-      });
-    } else {
-      element.append(child);
-    }
-  }
-
-  static addElementAttributes(element, props) {
-    const nonHTMLAttributes = ["style", "className", "events", "children"];
-    const filteredAttributes = Object.keys(props).filter(
-      (key) => !nonHTMLAttributes.includes(key)
-    );
-    for (const attribute of filteredAttributes) {
-      const value = props[attribute];
-      element[attribute] = value;
-    }
-  }
-
-  static createFragment(markup, props = {}) {
-    let element = null;
-
-    if (markup.includes('<') || markup.includes('</')) {
-      // convert string to fragment
-      const fragment = document
-      .createRange()
-      .createContextualFragment(markup.trim());
-
-      if (fragment.childElementCount > 1) {
-        throw new Error(
-          "Only one child element permitted in component first child level"
-        );
-      }
-
-      element = fragment.firstChild;
-    } else {
-      element = document.createElement(markup);
-    }
-
-    // add styles, attributes, listeners, child nodes
-    if (props.style) {
-      this.addElementStyle(element, props.style);
-    }
-
-    if (props.className) {
-      this.addElementClassName(element, props.className);
-    }
-
-    if (props.events) {
-      this.addElementEvents(element, props.events);
-    }
-
-    if (props.children) {
-      this.addElementChildren(element, props.children);
-    }
-
-    this.addElementAttributes(element, props);
-
-    // get fragment first inner element
-    return element;
   }
 
   render() {

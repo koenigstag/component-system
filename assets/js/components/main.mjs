@@ -1,4 +1,4 @@
-import { Component } from '../Component.mjs';
+import { Component, Fragment } from '../Component.mjs';
 import ProductsList from './productsList.mjs';
 
 class Main extends Component {
@@ -20,9 +20,9 @@ class Main extends Component {
   };
 
   render () {
-    const mainElem = Component.createFragment('main', {
+    const mainElem = new Fragment('main', {
       children: [this.state.timer, new ProductsList()],
-    });
+    }).rootElement;
 
     return mainElem;
   }

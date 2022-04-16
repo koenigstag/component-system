@@ -1,4 +1,4 @@
-import { Component } from '../Component.mjs';
+import { Component, Fragment } from '../Component.mjs';
 
 class Header extends Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class Header extends Component {
   }
 
   render() {
-    const headerElem = Component.createFragment(`
+    const headerElem = new Fragment(`
       <header>
         X: ${this.state.x}; Y: ${this.state.y}
         timer: ${this.state.int}
@@ -29,7 +29,7 @@ class Header extends Component {
     {
       style: { padding: '30px' },
       events: { click: [this.headerClickEvent] },
-    });
+    }).rootElement;
     
     return headerElem;
   }
