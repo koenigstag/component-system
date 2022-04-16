@@ -128,7 +128,7 @@ export class Fragment {
       // convert string to fragment
       const fragment = document
       .createRange()
-      .createContextualFragment(markup.trim());
+      .createContextualFragment(markup.trim().replaceAll('\n', ''));
 
       if (fragment.childElementCount > 1) {
         throw new Error(
@@ -176,14 +176,50 @@ export class Fragment {
 export class Component {
   props;
   state;
+  _reactiveTree = null;
   _prevProps;
   _prevState;
 
-  _prevRenderedElement;
+  _renderedElement = null;
+  _diffElement = null;
 
   constructor(props = {}) {
     this.props = props;
     this.state = {};
+  }
+
+  getReactiveTreeHandler() {
+
+    return (state, stateField, newValue, stateProxy) => {
+      if (this._renderedElement) {
+        for (const selector in this._reactiveTree[stateField]) {
+          const action = this._reactiveTree[stateField][selector];
+          const domElem = selector === '&' || selector === 'self' ? this._renderedElement : this._renderedElement.querySelector(selector);
+          const diffElem = selector === '&' || selector === 'self' ? this._diffElement : this._diffElement.querySelector(selector);
+
+          if (!domElem) return;
+          // console.log('class', state);
+
+          if (typeof action === "function") {
+            action(domElem, newValue, this.state);
+          } else if (typeof action === "string") {
+            domElem[action] = diffElem[action];
+          }
+        }
+      }
+
+      state[stateField] = newValue;
+      return true;
+    };
+  }
+
+  registerReactiveHandler(stateField, selector, action) {
+    this._reactiveTree[stateField][selector] = action;
+  }
+
+  generateReactiveTree() {
+    this._reactiveTree = { ...(Object.keys(this.state).reduce((accum, stateField) => ({ ...accum, [stateField]: {} }), {})) };
+    this.state = new Proxy(this.state, { set: this.getReactiveTreeHandler() });
   }
 
   set props(value) {
@@ -193,15 +229,6 @@ export class Component {
 
     this._prevProps = this.props;
     this.props = value;
-  }
-
-  set state(value) {
-    // if value is not an object instance
-    if (typeof newValue !== "object" || value.constructor.name !== "Object")
-      return;
-
-    this._prevState = this.state;
-    this.state = value;
   }
 
   /* LIFECYCLE methods */
@@ -217,43 +244,34 @@ export class Component {
 
     // re-render
     const newElem = this.render();
+    this._diffElement = newElem;
 
     // after first render
     if (
-      this._prevRenderedElement &&
-      this._prevRenderedElement instanceof Element
-      ) {
-        // replace dom node
-        if (this._prevRenderedElement.replaceWith) {
-          this._prevRenderedElement.replaceWith(newElem);
-        } else {
-          // polyfill
-          this._prevRenderedElement.after(newElem);
-          this._prevRenderedElement.remove();
-        }
-      } else {
-      // here is bug - didmount = didupdate when creating instance in parent render()
-      // so didmount should be called in rootDOM, same for willunmount
-      // solution appears to be "architecture-breaking" as while rootDOM works with Element class
+      this._renderedElement === null
+    ) {
       setTimeout(() => this.componentDidMount(), 0);
+
+      // assign newly renderred element
+      this._renderedElement = newElem;
     }
     setTimeout(() => this.componentDidUpdate(), 0);
 
-    // assign newly renderred element
-    this._prevRenderedElement = newElem;
-
-    return newElem;
+    return this._renderedElement;
   }
 
   setState(newValue, callback = () => {}) {
     // if function - then calculate result; else get value
-    const newState =
-      typeof newValue === "function" ? newValue(this.state) : newValue;
+    const newState = newValue(this.state);
 
-    // if the same value as prev value
-    if (Object.is(newState, this.state)) return;
+    // if not the same value as prev value
+    if (!Object.is(newState, this.state)) return;
 
+    // if value is not an object instance
+    if (typeof newState !== "object" || newState.constructor.name !== "Object") return;
+    
     // change state
+    this._prevState = this.state;
     this.state = newState;
 
     callback();

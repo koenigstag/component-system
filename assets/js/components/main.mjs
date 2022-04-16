@@ -9,19 +9,21 @@ class Main extends Component {
     this.state = {
       timer: 0,
     };
+    this.generateReactiveTree();
   }
 
   componentDidMount() {
-    setInterval(this.handleMainTimer, 1000);
+    // setInterval(this.handleMainTimer, 1000);
+    // this.registerReactiveHandler('timer', '&', 'innerText');
   }
 
   handleMainTimer = () => {
-    this.setState(state => ({ ...state, timer: state.timer + 1 }));
+    this.setState(state => { state.timer += 1; return state; });
   };
 
   render () {
     const mainElem = new Fragment('main', {
-      children: [this.state.timer, new ProductsList()],
+      children: [new ProductsList()],
     }).rootElement;
 
     return mainElem;

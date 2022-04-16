@@ -1,4 +1,4 @@
-import { Component } from '../Component.mjs';
+import { Component, Fragment } from '../Component.mjs';
 import { loadProducts } from '../api.mjs';
 
 class ProductsList extends Component {
@@ -7,29 +7,38 @@ class ProductsList extends Component {
 
     this.state = {
       products: [],
+      test: [],
     };
+    this.generateReactiveTree();
   }
 
   componentDidMount() {
-    loadProducts().then(({ data: products }) => {
-      this.setState(state => ({ ...state, products }));
+    this.registerReactiveHandler('products', '&', (elem, value, state) => {
+      console.log(value);
+      elem.replaceWith(this._diffElement);
     });
+
+    loadProducts().then(({ data: products }) => {
+      this.setState(state => { state.products = products; return state; });
+    });
+
+    setTimeout(() => this.setState((state) => {
+      state.test = ['1'];
+      return state;
+    }));
   }
 
   render() {
-    const sectionElem = document.createElement('section');
-    const articles = []
-    for (const prod of this.state.products) {
-      const articleElem = document.createElement('article');
-
-      const card = JSON.stringify(prod);
-
-      articleElem.append(card);
-      articles.push(articleElem);
-    }
-    sectionElem.append(...articles);
-
+    const articles = this.state.products.map(prod => {
+      const articleElem = new Fragment('article', { children: [JSON.stringify(prod)] }).rootElement;
+      
+      console.log(articleElem instanceof Element);
+      return articleElem;
+    });
+    
+    const sectionElem = new Fragment('section', { children: [...articles] }).rootElement;
     return sectionElem;
+    // return 'test';
   }
 }
 
