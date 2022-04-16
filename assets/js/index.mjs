@@ -1,8 +1,12 @@
+import { Component, rootDOM } from './Component.mjs';
 import Header from './components/header.mjs';
 import Main from './components/main.mjs';
 
-function App() {
-  return [new Header().redraw(), new Main().redraw()];
+class App extends Component {
+  render() {
+    const div = Component.createFragment('app', { children: [new Header(), new Main()] })
+    return div;
+  }
 }
 
-document.body.append(...App());
+rootDOM("app-root", new App());

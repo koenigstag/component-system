@@ -1,11 +1,25 @@
+import { Component } from '../Component.mjs';
 import { loadProducts } from '../api.mjs';
 
-function ProductsList() {
-  const sectionElem = document.createElement('section');
+class ProductsList extends Component {
+  constructor(props) {
+    super(props);
 
-  loadProducts().then(({ data: products }) => {
+    this.state = {
+      products: [],
+    };
+  }
+
+  componentDidMount() {
+    loadProducts().then(({ data: products }) => {
+      this.setState(state => ({ ...state, products }));
+    });
+  }
+
+  render() {
+    const sectionElem = document.createElement('section');
     const articles = []
-    for (const prod of products) {
+    for (const prod of this.state.products) {
       const articleElem = document.createElement('article');
 
       const card = JSON.stringify(prod);
@@ -14,9 +28,9 @@ function ProductsList() {
       articles.push(articleElem);
     }
     sectionElem.append(...articles);
-  });
 
-  return sectionElem;
+    return sectionElem;
+  }
 }
 
 export default ProductsList;
