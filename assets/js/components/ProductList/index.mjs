@@ -1,16 +1,12 @@
-import { loadProducts } from "../api.mjs";
+import { Component } from "../../Component.mjs";
+import ProductCard from "../ProductCard/index.mjs";
+import { loadProducts } from "../../api/api.mjs";
 
-class ProductsList extends hyperHTML.hyper.Component {
+class ProductsList extends Component {
   get defaultState() {
     return {
       products: [],
     };
-  }
-
-  constructor(props) {
-    super(props);
-
-    setTimeout(() => this.componentDidMount());
   }
 
   componentDidMount() {
@@ -20,20 +16,15 @@ class ProductsList extends hyperHTML.hyper.Component {
   }
 
   render() {
-
     const { products } = this.state;
 
     return this.html`
-      <section>
+      <div class="d-flex flex-wrap align-items-stretch">
         ${products.map(
           // wiring list element to object will save it for next renders until object change
-          (prod) => hyperHTML.wire(prod)`
-            <article>
-              ${JSON.stringify(prod)}
-            </article>
-          `
+          (prod) => hyperHTML.wire(prod)`${new ProductCard({ product: prod })}`
         )}
-      </section>
+      </div>
     `;
   }
 }

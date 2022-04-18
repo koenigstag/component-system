@@ -1,14 +1,10 @@
-import Header from "./components/header.mjs";
-import Main from "./components/main.mjs";
+import { Component } from "./Component.mjs";
+import Header from "./components/Header/index.mjs";
+import Main from "./components/Main/index.mjs";
 
-class App extends hyperHTML.hyper.Component {
+class App extends Component {
   get defaultState() {
     return { children: [] };
-  }
-
-  constructor(props) {
-    super(props);
-    setTimeout(() => this.componentDidMount());
   }
 
   componentDidMount() {
@@ -19,13 +15,18 @@ class App extends hyperHTML.hyper.Component {
   }
 
   render() {
-
     const { children } = this.state;
 
-    return this.html`<app>
+    return this.html`<app class="d-flex flex-col flex-grow-1">
       ${children}
     </app>`;
   }
 }
 
 hyperHTML.hyper(document.querySelector("#app-root"))`${new App()}`;
+
+
+// import and run less compiler
+const lessCompiler =  document.createElement('script');
+lessCompiler.src = 'https://cdn.jsdelivr.net/npm/less@4';
+document.body.append(lessCompiler);
