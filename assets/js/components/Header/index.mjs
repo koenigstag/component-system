@@ -27,7 +27,7 @@ class Header extends Component {
 
   // is called after each render
   componentDidUpdate() {
-    console.log(this.state);
+    // console.log(this.state);
   }
 
   render() {

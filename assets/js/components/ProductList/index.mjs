@@ -22,7 +22,9 @@ class ProductsList extends Component {
       <div class="d-flex flex-wrap align-items-stretch">
         ${products.map(
           // wiring list element to object will save it for next renders until object change
-          (prod) => hyperHTML.wire(prod)`${new ProductCard({ product: prod })}`
+          (prod) => {
+            return hyperHTML.wire(prod)`${new ProductCard({ product: prod })}`
+          }
         )}
       </div>
     `;

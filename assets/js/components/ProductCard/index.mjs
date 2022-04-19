@@ -2,8 +2,22 @@ import { Component } from "../../Component.mjs";
 
 const imageSrc = (code) => `https://github.com/fd-freshjs/serve-json/raw/main/assets/images/mebel/${code}.png`;
 
+export const IProduct = Yup.object({
+  name: Yup.string().required(),
+  code: Yup.string().required(),
+  price: Yup.object(({
+    old: Yup.number().positive(),
+    current: Yup.number().positive().required(),
+  })),
+});
+
+export const IProductCard = Yup.object({
+  product: IProduct,
+});
 
 class ProductCard extends Component {
+  static propTypes = IProductCard;
+
   heartHTML = `<svg>
     <rect width="10" height="10" fill="white" />
   </svg>`;
@@ -25,7 +39,6 @@ class ProductCard extends Component {
           <img src="${imageSrc(code)}" />
         </a>
         <h6>
-          
             ${name}
           </a>
         </h6>
