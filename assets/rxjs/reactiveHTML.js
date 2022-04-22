@@ -33,13 +33,14 @@ window.reactiveObj = function reactiveObj(obj) {
   Object.keys(obj).forEach((key) => {
     const dep = new Dependency();
     let value = obj[key];
-
+    
     Object.defineProperty(obj, key, {
       get() {
         dep.depend();
         return value;
       },
       set(newValue) {
+        // slightly modified
         if (!Object.is(newValue, value)) {
           value = newValue;
           dep.notify();
@@ -68,10 +69,21 @@ window.s = function s(state, value) {
   return new Subscriber(state, value);
 }
 
+window.newState = function newState(obj) {
+  const state = reactiveObj(obj);
+  const sub = (field) => s(state, field)
+  
+  // return tuple
+  return [state, sub];
+}
 
+window.h = function h(tag, props, ...children) {
+  if (typeof tag === 'function') {
+    // WIP components render
 
-window.h = function h(tagName, props, ...children) {
-  const ref = document.createElement(tagName);
+  }
+
+  const ref = document.createElement(tag);
 
   if (props) {
     for(const key in props) {
@@ -107,32 +119,28 @@ window.h = function h(tagName, props, ...children) {
 
 h.processChildren = function (elem, children) {
   if(Array.isArray(children)) {
-    console.log('array');
     for (const child of children) {
       if (typeof child === "string" || typeof child === "number") {
         elem.textContent = child;
       } else if (child instanceof Element) {
         elem.append(child);
       } else if (child instanceof Subscriber) {
-        console.log('sub');
-    
         watchEffect(() => {
           let content;
-    
+
           if (typeof child.value === 'function') {
             content = child.value(child.state);
           } else if (typeof child.value === 'string') {
             content = child.state[child.value];
           }
-    
-          console.log(content);
+
           if (typeof content === "string" || typeof content === "number") {
             content = [content];
-          } else if (!Array.isArray(content) || content !== undefined || content !== null || typeof content !== "boolean") {
+          } else if (!Array.isArray(content) && content !== undefined && content !== null && typeof content !== "boolean") {
             throw new TypeError('Unprocessable child in reactive state');
           }
     
-          Promise.resolve().then(() => h.processChildren(elem, content));
+          Promise.resolve().then(() => window.h.processChildren(elem, content));
         });
       }
     }
@@ -141,3 +149,7 @@ h.processChildren = function (elem, children) {
 
   return false;
 };
+
+window.loadStylesheet = function loadStylesheet(absPath, options = { rel: "stylesheet" }) {
+  document.head.append(h('link', { rel: options.rel, href: absPath }));
+}
