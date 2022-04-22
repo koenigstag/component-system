@@ -4,15 +4,18 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Reactive html</title>
 
     <script defer src="./assets/rxjs/reactiveHTML.js"></script>
+    <script defer type="module">
+      import htm from 'https://unpkg.com/htm?module';
+      window.html = htm.bind(h);
+    </script>
     <script defer type="module" src="./assets/rxjs/app.mjs"></script>
     <script defer type="module" src="./assets/rxjs/index.mjs"></script>
   </head>
   <body>
-
-    <div id="app-root"></div>
+    <app id="app-root"></app>
 
   </body>
 </html>

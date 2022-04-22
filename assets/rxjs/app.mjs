@@ -1,14 +1,20 @@
+import Main from './main.mjs';
 
-const Appstate = reactiveObj({
+loadStylesheet('/assets/css/app.css');
+
+const [AppState, sub] = newState({
   test: 'test',
 });
 
-const sub = (field) => s(Appstate, field);
-
 export default function App() {
+  const main = Main(); // WIP nesting components
+
   return html`
-    <a href="${sub('test')}">${sub('test')}</a>
+    <div>
+      <a className="test-link" href="${sub('test')}">${sub((state) => state.test)}</a>
+      <${Main} />
+    </div>
   `;
 }
 
-setInterval(() => Appstate.test = Math.random(), 10);
+setInterval(() => AppState.test = Math.round(Math.random() * 1000000), 10);

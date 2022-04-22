@@ -1,7 +1,6 @@
-import htm from 'https://unpkg.com/htm?module';
 import App from './app.mjs';
 
-window.html = htm.bind(h);
+loadStylesheet('/assets/css/index.css');
 
 const container = document.querySelector("#app-root");
 

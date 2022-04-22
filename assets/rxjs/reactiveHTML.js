@@ -80,7 +80,7 @@ window.newState = function newState(obj) {
 window.h = function h(tag, props, ...children) {
   if (typeof tag === 'function') {
     // WIP components render
-
+    return;
   }
 
   const ref = document.createElement(tag);
