@@ -7,12 +7,10 @@ const [AppState, sub] = newState({
 });
 
 export default function App() {
-  const main = Main(); // WIP nesting components
-
   return html`
     <div>
       <a className="test-link" href="${sub('test')}">${sub((state) => state.test)}</a>
-      <${Main} />
+      <${Main} testProp="value">test<//>
     </div>
   `;
 }

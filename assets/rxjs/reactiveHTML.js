@@ -79,8 +79,12 @@ window.newState = function newState(obj) {
 
 window.h = function h(tag, props, ...children) {
   if (typeof tag === 'function') {
-    // WIP components render
-    return;
+    // WIP components nesting
+    if (!props) props = {};
+    if (children?.length) props.children = children;
+    const componentElem = tag(props);
+
+    return componentElem;
   }
 
   const ref = document.createElement(tag);
