@@ -198,7 +198,6 @@ export class Component {
           const diffElem = selector === '&' || selector === 'self' ? this._diffElement : this._diffElement.querySelector(selector);
 
           if (!domElem) return;
-          // console.log('class', state);
 
           if (typeof action === "function") {
             action(domElem, newValue, this.state);

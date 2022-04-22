@@ -28,7 +28,6 @@ class Header extends Component {
     console.time('interval');
     setInterval(() => this.setState((state) => {
       state.int = state.int + 1;
-      // console.log('comp', state);
       return state;
     }), 1000);
   }

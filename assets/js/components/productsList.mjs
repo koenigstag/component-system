@@ -14,7 +14,6 @@ class ProductsList extends Component {
 
   componentDidMount() {
     this.registerReactiveHandler('products', '&', (elem, value, state) => {
-      console.log(value);
       elem.replaceWith(this._diffElement);
     });
 
@@ -32,7 +31,6 @@ class ProductsList extends Component {
     const articles = this.state.products.map(prod => {
       const articleElem = new Fragment('article', { children: [JSON.stringify(prod)] }).rootElement;
       
-      console.log(articleElem instanceof Element);
       return articleElem;
     });
     
