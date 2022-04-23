@@ -89,9 +89,6 @@ window.h = function h(tag, props, ...children) {
     // WIP components nesting
     if (!props) props = {};
     if (children?.length) props.children = children;
-    
-    // TODO props sub
-
     const componentElem = tag(props);
 
     return componentElem;
@@ -147,3 +144,6 @@ window.h = function h(tag, props, ...children) {
 window.loadStylesheet = function loadStylesheet(absPath, options = { rel: "stylesheet" }) {
   document.head.append(h('link', { rel: options.rel, href: absPath }));
 }
+
+// bind createElement to reactiveHTML h function
+window.html = htm.bind(h);
