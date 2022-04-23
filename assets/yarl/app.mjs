@@ -3,8 +3,15 @@ import Main from './main.mjs';
 loadStylesheet('/assets/css/app.css');
 
 const [AppState, sub] = newState({
+  path: window.location.pathname,
   test: 'test',
 });
+
+const onClickHandler = (e) => {
+  e.preventDefault();
+  history.replaceState('', null, e.target.href);
+  AppState.path = e.target.href;
+};
 
 export default function App() {
   clearInterval(App.timer);
@@ -12,7 +19,8 @@ export default function App() {
 
   return html`
     <div>
-      <a className="test-link" href="${sub('test')}">${sub((state) => state.test)}</a>
+      <input value=${sub('path')} />
+      <a className="test-link" events="${{ click: onClickHandler }}" href="${sub('test')}">${sub((state) => state.test)}</a>
       <${Main} testProp="123">test<//>
     </div>
   `;

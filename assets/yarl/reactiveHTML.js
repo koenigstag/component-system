@@ -5,13 +5,15 @@
  * YT Playlist: https://www.youtube.com/watch?v=_Mv1WSE8fY0&list=PLu_62Q68DvTqT1wqptF332yXjCU3dXrRb
 */
 
-let activeEffect = null;
-
+// slightly modified
+watchEffect.activeEffect = null;
 function watchEffect(fn) {
-  activeEffect = fn;
+  watchEffect.activeEffect = fn;
   fn();
-  activeEffect = null;
+  watchEffect.activeEffect = null;
 }
+
+window.watchEffect = watchEffect;
 
 class Dependency {
   constructor() {
@@ -20,7 +22,7 @@ class Dependency {
 
   // adds watchEffect callback
   depend() {
-    if (activeEffect) this.subscribers.add(activeEffect);
+    if (watchEffect.activeEffect) this.subscribers.add(window.watchEffect.activeEffect);
   }
 
   // fires when state changes
@@ -79,6 +81,7 @@ window.newState = function newState(obj) {
 
 // h (tag | Function | Component, attrs, [text?, Elements?,...])
 window.h = function h(tag, props, ...children) {
+  // TODO rewrite as wrapper around hyperscript library or alternative
   if (typeof tag === 'function') {
     // WIP components nesting
     if (!props) props = {};
@@ -93,7 +96,7 @@ window.h = function h(tag, props, ...children) {
   if (props) {
     for(const key in props) {
       const prop = props[key];
-
+      
       if (key === 'events') {
         const handlers = prop;
         for (const eventKey in handlers) {
@@ -104,7 +107,7 @@ window.h = function h(tag, props, ...children) {
       }
 
       if (prop instanceof Subscriber) {
-        watchEffect(() => {
+        window.watchEffect(() => {
           if (typeof prop.value === 'function') {
             ref[key] = prop.value(prop.state);
           } else if (typeof prop.value === 'string') {
@@ -130,7 +133,7 @@ h.processChildren = function (elem, children) {
       } else if (child instanceof Element) {
         elem.append(child);
       } else if (child instanceof Subscriber) {
-        watchEffect(() => {
+        window.watchEffect(() => {
           let content;
 
           if (typeof child.value === 'function') {
