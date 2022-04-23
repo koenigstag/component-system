@@ -17,6 +17,13 @@ export default function Main(props) {
           ${sub('seconds')}
         </span>
       </div>
+
+      ${sub((state) => {
+        // did mount doesnt work without read of exsisting state field
+        console.log('component did update', state.counter);
+        
+      })}
+
       <div>
         <span>Prop, input value: </span>
         <span>
