@@ -61,19 +61,23 @@ window.reactiveObj = function reactiveObj(obj) {
  * email: koenigstag@gmail.com
 */
 class Subscriber {
-  constructor(state, value) {
+  constructor(state, field) {
     this.state = state;
-    this.value = value;
+    this.field = field;
   }
-}
 
-window.s = function s(state, value) {
-  return new Subscriber(state, value);
+  read() {
+    if (typeof this.field === 'function') {
+      return this.field(this.state);
+    } else if (typeof this.field === 'string') {
+      return this.state[this.field];
+    }
+  }
 }
 
 window.newState = function newState(obj) {
   const state = reactiveObj(obj);
-  const sub = (field) => s(state, field)
+  const sub = (field) => new Subscriber(state, field);
   
   // return tuple
   return [state, sub];
@@ -81,82 +85,64 @@ window.newState = function newState(obj) {
 
 // h (tag | Function | Component, attrs, [text?, Elements?,...])
 window.h = function h(tag, props, ...children) {
-  // TODO rewrite as wrapper around hyperscript library or alternative
   if (typeof tag === 'function') {
     // WIP components nesting
     if (!props) props = {};
     if (children?.length) props.children = children;
+    
+    // TODO props sub
+
     const componentElem = tag(props);
 
     return componentElem;
   }
 
-  const ref = document.createElement(tag);
+  const subscribers = { children: [] };
 
   if (props) {
     for(const key in props) {
       const prop = props[key];
       
-      if (key === 'events') {
-        const handlers = prop;
-        for (const eventKey in handlers) {
-          const handler = handlers[eventKey];
-          ref.addEventListener(eventKey, handler);
-        }
-        continue;
-      }
-
       if (prop instanceof Subscriber) {
-        window.watchEffect(() => {
-          if (typeof prop.value === 'function') {
-            ref[key] = prop.value(prop.state);
-          } else if (typeof prop.value === 'string') {
-            ref[key] = prop.state[prop.value];
-          }
-        });
-      } else {
-        ref[key] = prop;
+        subscribers[key] = prop;
+        delete props[key];
       }
     }
   }
+  
+  for(const index in children) {
+    const child = children[index];
+    
+    if (child instanceof Subscriber) {
+      subscribers.children[index] = child;
+      children.splice(index, 1, document.createTextNode(child.read()));
+    }
+  }
 
-  h.processChildren(ref, children);
+  const ref = window.hyperscript(tag, props, children);
+
+  if (ref) {
+    for (const key in subscribers) {
+      const subscriber = subscribers[key];
+
+      if (key === 'children') {
+        for (const index in subscriber) {
+          const child = subscriber[index];
+
+          window.watchEffect(() => {
+            ref.childNodes[index].textContent = child.read();
+          });
+        }
+      } else {
+        window.watchEffect(() => {
+          ref[key] = subscriber.read();
+        });
+      }
+    }
+  }
 
   return ref;
 }
-
-h.processChildren = function (elem, children) {
-  if(Array.isArray(children)) {
-    for (const child of children) {
-      if (typeof child === "string" || typeof child === "number") {
-        elem.textContent = child;
-      } else if (child instanceof Element) {
-        elem.append(child);
-      } else if (child instanceof Subscriber) {
-        window.watchEffect(() => {
-          let content;
-
-          if (typeof child.value === 'function') {
-            content = child.value(child.state);
-          } else if (typeof child.value === 'string') {
-            content = child.state[child.value];
-          }
-
-          if (typeof content === "string" || typeof content === "number") {
-            content = [content];
-          } else if (!Array.isArray(content) && content !== undefined && content !== null && typeof content !== "boolean") {
-            throw new TypeError('Unprocessable child in reactive state');
-          }
-    
-          Promise.resolve().then(() => window.h.processChildren(elem, content));
-        });
-      }
-    }
-    return true;
-  }
-
-  return false;
-};
 
 window.loadStylesheet = function loadStylesheet(absPath, options = { rel: "stylesheet" }) {
   document.head.append(h('link', { rel: options.rel, href: absPath }));

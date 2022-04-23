@@ -10,7 +10,7 @@ const [AppState, sub] = newState({
 const onClickHandler = (e) => {
   e.preventDefault();
   history.replaceState('', null, e.target.href);
-  AppState.path = e.target.href;
+  AppState.path = new URL(e.target.href).pathname;
 };
 
 export default function App() {
@@ -20,7 +20,7 @@ export default function App() {
   return html`
     <div>
       <input value=${sub('path')} />
-      <a className="test-link" events="${{ click: onClickHandler }}" href="${sub('test')}">${sub((state) => state.test)}</a>
+      <a className="test-link" onclick="${onClickHandler}" href="${sub('test')}">${sub((state) => state.test)}</a>
       <${Main} testProp="123">test<//>
     </div>
   `;
