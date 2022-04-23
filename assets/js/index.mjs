@@ -1,12 +1,7 @@
-import { Component, Fragment, rootDOM } from './Component.mjs';
-import Header from './components/header.mjs';
-import Main from './components/main.mjs';
+import App from './app.mjs';
 
-class App extends Component {
-  render() {
-    const div = new Fragment('app', { children: [new Header(), new Main()] }).rootElement;
-    return div;
-  }
-}
+loadStylesheet('/assets/css/index.css');
 
-rootDOM("app-root", new App());
+const container = document.querySelector("#app-root");
+
+container.append(App());
