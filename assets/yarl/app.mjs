@@ -7,12 +7,13 @@ const [AppState, sub] = newState({
 });
 
 export default function App() {
+  clearInterval(App.timer);
+  App.timer = setInterval(() => AppState.test = Math.round(Math.random() * 1000000), 10);
+
   return html`
     <div>
       <a className="test-link" href="${sub('test')}">${sub((state) => state.test)}</a>
-      <${Main} testProp="value">test<//>
+      <${Main} testProp="123">test<//>
     </div>
   `;
 }
-
-setInterval(() => AppState.test = Math.round(Math.random() * 1000000), 10);

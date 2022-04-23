@@ -77,6 +77,7 @@ window.newState = function newState(obj) {
   return [state, sub];
 }
 
+// h (tag | Function | Component, attrs, [text?, Elements?,...])
 window.h = function h(tag, props, ...children) {
   if (typeof tag === 'function') {
     // WIP components nesting

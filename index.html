@@ -6,13 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reactive html</title>
 
-    <script defer src="./assets/rxjs/reactiveHTML.js"></script>
+    <!-- Yet Another Reactive Library (WIP) -->
+    <script defer src="./assets/yarl/reactiveHTML.js"></script>
+
     <script defer type="module">
       import htm from 'https://unpkg.com/htm?module';
       window.html = htm.bind(h);
     </script>
-    <script defer type="module" src="./assets/rxjs/app.mjs"></script>
-    <script defer type="module" src="./assets/rxjs/index.mjs"></script>
+    <script defer type="module" src="./assets/yarl/app.mjs"></script>
+    <script defer type="module" src="./assets/yarl/index.mjs"></script>
   </head>
   <body>
     <app id="app-root"></app>
