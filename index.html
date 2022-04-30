@@ -6,12 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reactive html</title>
 
+
+    <script type="importmap">
+      {
+        "imports": {
+          "ts-browser": "https://klesun.github.io/ts-browser/src/ts-browser.js",
+
+          "class-validator": "./assets/libs/class-validator.min.js",
+          "method-validator": "./assets/ts/method-validator.ts",
+          "hyperscript": "/assets/yarl/hyperscript@2.0.2.min.js"
+        }
+      }
+      </script>
+
     <!-- Yet Another Reactive Library (WIP) -->
     <script defer src="./assets/yarl/htm.min.js"></script>
     <script defer src="./assets/yarl/hyperscript@2.0.2.min.js"></script>
     <script defer src="./assets/yarl/reactiveHTML.js"></script>
 
-    <script defer type="module" src="./assets/js/index.mjs"></script>
+    <!-- <script defer type="module" src="./assets/js/index.mjs"></script> -->
+
+    <script defer src="./assets/libs/yup@0.32.11.min.js"></script>
+    <script defer type="module">
+      import {loadModule} from 'https://klesun.github.io/ts-browser/src/ts-browser.js';
+      loadModule('./assets/ts/index.ts').then(indexModule => {
+          return indexModule.default();
+      });
+  </script>
+
   </head>
   <body>
     <app id="app-root"></app>

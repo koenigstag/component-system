@@ -86,9 +86,8 @@ window.newState = function newState(obj) {
 // h (tag | Function | Component, attrs, [text?, Elements?,...])
 window.h = function h(tag, props, ...children) {
   if (typeof tag === 'function') {
-    // WIP components nesting
     if (!props) props = {};
-    if (children?.length) props.children = children;
+    if (children.length) props.children = children;
     const componentElem = tag(props);
 
     return componentElem;
@@ -112,7 +111,14 @@ window.h = function h(tag, props, ...children) {
     
     if (child instanceof Subscriber) {
       subscribers.children[index] = child;
-      children.splice(index, 1, document.createTextNode(child.read()));
+      const value = child.read();
+      let node = null;
+      if (typeof value === 'string' || typeof value === 'number') {
+        node = document.createTextNode(value);
+      } else if (Array.isArray(value) || value instanceof HTMLElement) {
+        node = value;
+      }
+      children.splice(index, 1, node);
     }
   }
 
@@ -126,13 +132,13 @@ window.h = function h(tag, props, ...children) {
         for (const index in subscriber) {
           const child = subscriber[index];
 
-          window.watchEffect(() => {
-            ref.childNodes[index].textContent = child.read();
+          window.watchEffect(async () => {
+            ref.childNodes[index].textContent = await child.read();
           });
         }
       } else {
-        window.watchEffect(() => {
-          ref[key] = subscriber.read();
+        window.watchEffect(async () => {
+          ref[key] = await subscriber.read();
         });
       }
     }

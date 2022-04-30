@@ -4,6 +4,8 @@ const [MainState, sub] = newState({
   seconds: 0,
 });
 
+const array = ['one', 'two', 'three', 'four', 'five'];
+
 export default function Main(props) {
   clearInterval(Main.timer);
   Main.timer = setInterval(() => MainState.seconds += 1, 1000);
@@ -18,11 +20,22 @@ export default function Main(props) {
         </span>
       </div>
 
-      ${sub((state) => {
-        // did mount doesnt work without read of exsisting state field
-        console.log('component did update', state.counter);
-        
-      })}
+      <div>
+        ${sub((state) => {
+          // did mount doesnt work without read of exsisting state field
+          console.log('component did update', state.seconds);
+          return state.seconds % 2 === 0 ? 'even' : 'odd';
+        })}
+      </div>
+
+      <div>
+        ${sub((state) => {
+          console.log('component did update', state.seconds);
+          console.log(array.slice(state.seconds % array.length, array.length));
+          
+          return array.slice(state.seconds % array.length, array.length);
+        })}/five
+      </div>
 
       <div>
         <span>Prop, input value: </span>
