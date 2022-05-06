@@ -5,8 +5,8 @@ export default () => {
   
   const myVar: number = '123';
 
-  const test = new Test().method(1, 2, 3);
+  // const test = new Test().method(1, 2, 3);
 
-  console.log('next line');
+  // console.log('next line');
   
 }

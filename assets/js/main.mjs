@@ -1,6 +1,6 @@
 import ComponentLabel from "./componentLabel.mjs";
 
-const [MainState, sub] = newState({
+const [MainState, $] = newState({
   seconds: 0,
 });
 
@@ -16,24 +16,24 @@ export default function Main(props) {
       <div>
         <span>Timer: </span>
         <span>
-          ${sub('seconds')}
+          ${$('seconds')}
         </span>
       </div>
 
       <div>
-        ${sub((state) => {
+        ${$((state) => {
           // did mount doesnt work without read of exsisting state field
-          console.log('component did update', state.seconds);
+          // console.log('component did update', state.seconds);
           return state.seconds % 2 === 0 ? 'even' : 'odd';
         })}
       </div>
 
       <div>
-        ${sub((state) => {
-          console.log('component did update', state.seconds);
-          console.log(array.slice(state.seconds % array.length, array.length));
+        ${$((state) => {
+          // console.log('component did update', state.seconds);
+          // console.log(array.slice(state.seconds % array.length, array.length));
           
-          return array.slice(state.seconds % array.length, array.length);
+          return array.slice(state.seconds % array.length, array.length).map(v => html`<span>${v}</span>`);
         })}/five
       </div>
 

@@ -162,9 +162,6 @@ window.h = function h(tag, props, ...children) {
   return ref;
 }
 
-window.loadStylesheet = function loadStylesheet(absPath, options = { rel: "stylesheet" }) {
-  document.head.append(h('link', { rel: options.rel, href: absPath }));
+window.loadStylesheet = function loadStylesheet(absPath, props = { rel: "stylesheet" }) {
+  document.head.append(h('link', { ...props, href: absPath }));
 }
-
-// bind createElement to reactiveHTML h function
-window.html = htm.bind(h);

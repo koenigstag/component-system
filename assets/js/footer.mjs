@@ -2,7 +2,7 @@ import * as AppState from './app.mjs';
 import ComponentLabel from './componentLabel.mjs';
 
 export default function Footer() {
-  console.log('mount');
+  // console.log('mount');
 
   return html`
     <footer style="display: flex; padding: 20px 30px; border: 1px solid green">
