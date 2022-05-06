@@ -110,32 +110,47 @@ window.h = function h(tag, props, ...children) {
     const child = children[index];
     
     if (child instanceof Subscriber) {
-      subscribers.children[index] = child;
       const value = child.read();
       let node = null;
       if (typeof value === 'string' || typeof value === 'number') {
         node = document.createTextNode(value);
-      } else if (Array.isArray(value) || value instanceof HTMLElement) {
+      } else if (value instanceof HTMLElement) {
         node = value;
+      } else if (Array.isArray(value)) {
+        node = value[0];
       }
       children.splice(index, 1, node);
+
+      subscribers.children[index] = child;
     }
   }
 
   const ref = window.hyperscript(tag, props, children);
 
   if (ref) {
+    for (const index in subscribers.children) {
+      const child = subscribers.children[index];
+
+      window.watchEffect(async () => {
+        const value = await child.read();
+        if (value instanceof HTMLElement) {
+          ref.childNodes[index].replaceWith(value);
+        } else if (Array.isArray(value)) {
+          const listElem = document.createElement('list');
+          listElem.append(...value);
+          ref.childNodes[index].replaceWith(listElem);
+        } else {
+          ref.childNodes[index].textContent = value;
+        }
+      });
+    }
+    subscribers.children = null;
+
     for (const key in subscribers) {
       const subscriber = subscribers[key];
 
       if (key === 'children') {
-        for (const index in subscriber) {
-          const child = subscriber[index];
-
-          window.watchEffect(async () => {
-            ref.childNodes[index].textContent = await child.read();
-          });
-        }
+        continue;
       } else {
         window.watchEffect(async () => {
           ref[key] = await subscriber.read();
