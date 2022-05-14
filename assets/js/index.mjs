@@ -24,9 +24,3 @@ class App extends Component {
 }
 
 hyperHTML.hyper(document.querySelector("#app-root"))`${new App()}`;
-
-
-// import and run less compiler
-const lessCompiler =  document.createElement('script');
-lessCompiler.src = 'https://cdn.jsdelivr.net/npm/less@4';
-document.body.append(lessCompiler);
